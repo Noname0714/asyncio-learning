@@ -35,3 +35,63 @@ python --version
 
 # 安装依赖
 pip install -r requirements.txt
+```
+
+## 🚀 运行方式
+1. 异步爬虫 vs 同步爬虫
+
+```bash
+# 运行异步爬虫与同步爬虫对比
+python aiohttp+gather.py
+
+```
+## 📊 运行结果
+性能对比（30个URL）
+| 方式 | 耗时	| 说明 |
+|------|------|------|
+|`同步 (requests)`|	207.11秒 |	逐个请求，总耗时=各请求之和|
+|`异步 (aiohttp)`| 2.42秒 |并发请求，总耗时≈最慢那个请求|
+结论：异步爬虫速度提升约85.6倍
+
+
+## 🐛 踩坑记录
+坑1：aiohttp连接数限制
+现象：并发100个URL时报错 Too many open files
+
+解决：用 asyncio.Semaphore(20) 限制并发数
+
+坑2：Pydantic v1 vs v2 写法不同
+现象：from pydantic import BaseModel 报错
+
+解决：检查版本 pip show pydantic，v2用 BaseModel，v1用 BaseModel
+
+
+## 📝 今日复盘
+学会了什么
+async/await 本质是协程，不是多线程
+
+asyncio.gather() 可以并发执行多个协程
+
+Semaphore 控制并发数，避免被限流
+
+Pydantic做API数据校验非常方便
+
+明天要改进的
+异常处理还不够完善（超时重试）
+
+异步代码调试比同步难，要习惯用 logging
+
+和Agent开发的关系
+Agent调用多个工具时可以并发执行，提升响应速度
+
+Pydantic用于解析大模型的JSON输出，确保格式正确
+
+📚 参考资料
+Python官方asyncio文档
+
+aiohttp官方文档
+
+Pydantic V2文档
+
+B站教程：码农高天
+
